@@ -1,5 +1,7 @@
 """
-In this current state it has been copied from http://neuralnetworksanddeeplearning.com/index.html.
+In this current state it has been copied from
+http://neuralnetworksanddeeplearning.com/index.html. I'm not claiming
+it's mine
 """
 
 """
