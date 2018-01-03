@@ -2,9 +2,8 @@ import connectfour as c4
 import random
 import os
 import numpy as np
+np.set_printoptions(threshold=np.nan)
 import itertools
-
-best = []
 
 class Network(object):
     def __init__(self, sizes):
@@ -90,10 +89,10 @@ def competition(bots):
     """
     board = c4.Board()
     scores, games = [], []
-    for i in range(30):
+    for i in range(len(bots)):
         scores.append(0)
 
-    games = list(itertools.combinations(list(range(len(bots)))*2, 2))
+    games = sorted(set(list(itertools.combinations(list(range(len(bots)))*2, 2))))
 
     for (i, j) in games:
         print(i, j)
@@ -119,12 +118,10 @@ def competition(bots):
             board.move(player, move)
 
             if board.draw():
-                board.view()
                 print("Draw!")
                 continue
             if board.winner() in (1, -1):
-                board.view()
-                print("The winner is " + str(i) if board.winner() == 1 else str(j))
+                # print("The winner is " + str(i) if board.winner() == 1 else str(j))
                 if board.winner == 1:
                     scores[i] += 1
                     scores[j] -= 1
@@ -148,12 +145,10 @@ def competition(bots):
             board.move(player, move)
 
             if board.draw():
-                board.view()
                 print("Draw!")
                 continue
             if board.winner() in (1, 2):
-                board.view()
-                print("The winner is " + str(i) if board.winner() == 1 else str(j))
+                # print("The winner is " + str(i) if board.winner() == 1 else str(j))
                 if board.winner == 1:
                     scores[i] += 1
                     scores[j] -= 1
@@ -161,20 +156,26 @@ def competition(bots):
                     scores[j] += 1
                     scores[i] -= 1
                 continue
-    print(scores)
+    print(sorted(scores))
     return bots[scores.index(max(scores))]
 
 def select():
     best = []
     for i in range(15):
+        print("Round", i, "of random bot generation")
         bots = []
-        bots.append(Network([126, 400, 7]))
-        best.append(competition(bots))
+        for i in range(15):
+            bots.append(Network([126, 400, 7]))
+        bot = competition(bots)
+        best.append(bot)
+    print("Natural selection of natural selection")
     best = competition(best)
-    with open('best.txt') as f:
-        f.write(best.sizes)
-        f.write(best.weights)
-        f.write(best.biases)
+    with open('best.txt', 'w') as f:
+        for items in [best.sizes, best.weights, best.biases]:
+            for item in items:
+                f.write(str(item))
+            f.write("\n")
+    player_vs_bot(best)
 
-if name == "__main__":
+if __name__ == "__main__":
     select()
