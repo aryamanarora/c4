@@ -1,5 +1,6 @@
 import numpy as np
 from termcolor import colored
+import os
 
 class Board(object):
     """ It's a connect four board.
@@ -17,7 +18,7 @@ class Board(object):
         ]
 
     def winner(self):
-        """Find if anyone has one yet.
+        """Find if anyone has won yet.
 
         Returns 1 if player1 has won, -1 if player2 has won, 0 if no one has won.
         """
@@ -27,7 +28,7 @@ class Board(object):
                     return row[col]
         for col in range(7): # vertical
             for row in range(3):
-                if self.board[row][col] == self.board[row+1][col] == self.board[row+2][col] == self.board[row+3][col]:
+                if self.board[row][col] == self.board[row+1][col] == self.board[row+2][col] == self.board[row+3][col] != 0:
                     return self.board[row][col]
         for row in range(3): # diagonal right
             for col in range(4):
@@ -37,7 +38,7 @@ class Board(object):
             for col in range(3, 7):
                 if self.board[row][col] == self.board[row+1][col-1] == self.board[row+2][col-2] == self.board[row+3][col-3] != 0:
                     return self.board[row][col]
-        return None # no winners
+        return 0
 
     def draw(self):
         return (self.winner() is None and self.complete())
@@ -55,8 +56,8 @@ class Board(object):
             for row in reversed(range(6)):
                 if self.board[row][col] == 0:
                     cols.append(col)
-                    break
-        return cols
+                    continue
+        return set(cols) or []
 
     def move(self, player, col):
         """Places a piece in the connect four board. It figures out whose move it is (1 always goes first)
@@ -80,6 +81,7 @@ class Board(object):
 
     def view(self):
         """Prettyprints the board; red is 1 yellow is -1"""
+        os.system('clear')
         for row in self.board:
             for col in row:
                 if col == 1:
