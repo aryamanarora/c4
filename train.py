@@ -2,6 +2,9 @@ import connectfour as c4
 import random
 import os
 import numpy as np
+import itertools
+
+best = []
 
 class Network(object):
     def __init__(self, sizes):
@@ -81,19 +84,16 @@ def player_vs_bot(bot):
         if board.winner() in (1, 2):
             print("The winner is " + "the bot" if board.winner() == -1 else "you")
 
-def competition():
+def competition(bots):
     """30 random neural networks fight each other. (900 games)
     The best goes on to the natural selection phase.
     """
     board = c4.Board()
-    bots, scores, games = [], [], []
+    scores, games = [], []
     for i in range(30):
-        bots.append(Network([126, 400, 7]))
         scores.append(0)
 
-    for i in range(30):
-        for j in range(30):
-            games.append((i, j))
+    games = list(itertools.combinations(list(range(len(bots)))*2, 2))
 
     for (i, j) in games:
         print(i, j)
@@ -119,12 +119,12 @@ def competition():
             board.move(player, move)
 
             if board.draw():
-                # board.view()
+                board.view()
                 print("Draw!")
                 continue
             if board.winner() in (1, -1):
-                # board.view()
-                # print("The winner is " + str(i) if board.winner() == 1 else str(j))
+                board.view()
+                print("The winner is " + str(i) if board.winner() == 1 else str(j))
                 if board.winner == 1:
                     scores[i] += 1
                     scores[j] -= 1
@@ -148,12 +148,12 @@ def competition():
             board.move(player, move)
 
             if board.draw():
-                # board.view()
+                board.view()
                 print("Draw!")
                 continue
             if board.winner() in (1, 2):
-                # board.view()
-                # print("The winner is " + str(i) if board.winner() == 1 else str(j))
+                board.view()
+                print("The winner is " + str(i) if board.winner() == 1 else str(j))
                 if board.winner == 1:
                     scores[i] += 1
                     scores[j] -= 1
@@ -162,5 +162,19 @@ def competition():
                     scores[i] -= 1
                 continue
     print(scores)
-    best = bots[scores.index(max(scores))]
-    player_vs_bot(best)
+    return bots[scores.index(max(scores))]
+
+def select():
+    best = []
+    for i in range(15):
+        bots = []
+        bots.append(Network([126, 400, 7]))
+        best.append(competition(bots))
+    best = competition(best)
+    with open('best.txt') as f:
+        f.write(best.sizes)
+        f.write(best.weights)
+        f.write(best.biases)
+
+if name == "__main__":
+    select()
