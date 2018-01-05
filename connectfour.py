@@ -2,19 +2,22 @@ import numpy as np
 from termcolor import colored
 import os
 
+
 class Board(object):
     """ It's a connect four board.
 
     None of the methods have error handling btw.
     """
+
+    # the board itself
     def __init__(self):
         self.board = [
-                        [0, 0, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0, 0]
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]
         ]
 
     def winner(self):
@@ -22,21 +25,26 @@ class Board(object):
 
         Returns 1 if player1 has won, -1 if player2 has won, 0 if no one has won.
         """
-        for row in self.board: # horizontal
+
+        # horizontal
+        for row in self.board:
             for col in range(4):
-                if row[col] == row[col+1] == row[col+2] == row[col+3] != 0:
+                if row[col] == row[col + 1] == row[col + 2] == row[col + 3] != 0:
                     return row[col]
-        for col in range(7): # vertical
+        # vertical
+        for col in range(7):
             for row in range(3):
-                if self.board[row][col] == self.board[row+1][col] == self.board[row+2][col] == self.board[row+3][col] != 0:
+                if self.board[row][col] == self.board[row + 1][col] == self.board[row + 2][col] == self.board[row + 3][col] != 0:
                     return self.board[row][col]
-        for row in range(3): # diagonal right
+        # diag right
+        for row in range(3):
             for col in range(4):
-                if self.board[row][col] == self.board[row+1][col+1] == self.board[row+2][col+2] == self.board[row+3][col+3] != 0:
+                if self.board[row][col] == self.board[row + 1][col + 1] == self.board[row + 2][col + 2] == self.board[row + 3][col + 3] != 0:
                     return self.board[row][col]
-        for row in range(3): # diagonal left
+        # diag left
+        for row in range(3):
             for col in range(3, 7):
-                if self.board[row][col] == self.board[row+1][col-1] == self.board[row+2][col-2] == self.board[row+3][col-3] != 0:
+                if self.board[row][col] == self.board[row + 1][col - 1] == self.board[row + 2][col - 2] == self.board[row + 3][col - 3] != 0:
                     return self.board[row][col]
         return 0
 
@@ -88,5 +96,6 @@ class Board(object):
                     print(colored('●', 'red'), end=' ')
                 elif col == -1:
                     print(colored('●', 'yellow'), end=' ')
-                else: print("☐", end=' ')
+                else:
+                    print("☐", end=' ')
             print()
